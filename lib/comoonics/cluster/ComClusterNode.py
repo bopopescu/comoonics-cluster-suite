@@ -106,7 +106,7 @@ class RedHatClusterNode(ClusterNode):
         self.addNonStatic("local")
         self.addNonStatic("estranged")
         self.addNonStatic("rgmanager")
-        self.addNonStatic("rgmanager_master")
+        self.addNonStatic("rgmanager_main")
         self.addNonStatic("qdisk")
 
     def query(self, param, *params, **keys):

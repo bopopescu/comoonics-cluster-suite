@@ -232,7 +232,7 @@ class OSRClusterNode(KSObject):
         return tmp
 
 class OSRClusterNodeNetdev(KSObject):
-    valid_attrs=[ "master", "slave", "bondingopts", "ip", "netmask", "gateway" ]
+    valid_attrs=[ "main", "subordinate", "bondingopts", "ip", "netmask", "gateway" ]
     def __init__(self, _node, _netdev="eth0", **kwds):
         KSObject.__init__(self)
         self.MAP_ATTRS["devname"]="name"

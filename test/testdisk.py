@@ -27,7 +27,7 @@ xml="""
 <root>
 <disk name="/dev/sdf"/>
 <disk name="/dev/sdg"/>
-<disk name="/dev/gnbd/masterroot"/>
+<disk name="/dev/gnbd/mainroot"/>
 </root>
 """
 doc = reader.fromString(xml)

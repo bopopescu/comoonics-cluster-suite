@@ -40,8 +40,8 @@ class Test(unittest.TestCase):
     <clusternodes>
         <clusternode name="name0" nodeid="1" votes="1">
             <com_info>
-                <eth master="bond0" name="eth0" slave="yes"/>
-                <eth master="bond0" name="eth1" slave="yes"/>
+                <eth main="bond0" name="eth0" subordinate="yes"/>
+                <eth main="bond0" name="eth1" subordinate="yes"/>
                 <eth bondingopts="miimon=100,mode=passive" name="bond0"/>
                 <eth gateway="10.0.0.2" ip="10.0.0.1" name="bond0.100" netmask="255.255.255.0"/>
                 <rootvolume fstype="ext3" name="/dev/vg_testcluster_sr/lv_sharedroot"/>
@@ -66,12 +66,12 @@ class Test(unittest.TestCase):
             _node.rootvol=self.rootvolume
             _node.rootfstype="ext3"
             _netdev=OSRClusterNodeNetdev(_node, "eth0")
-            _netdev.master="bond0"
-            _netdev.slave="yes"
+            _netdev.main="bond0"
+            _netdev.subordinate="yes"
             _node.addNetdev(_netdev)
             _netdev=OSRClusterNodeNetdev(_node, "eth1")
-            _netdev.master="bond0"
-            _netdev.slave="yes"
+            _netdev.main="bond0"
+            _netdev.subordinate="yes"
             _node.addNetdev(_netdev)
             _netdev=OSRClusterNodeNetdev(_node, "bond0")
             _netdev.bondingopts="miimon=100,mode=passive"

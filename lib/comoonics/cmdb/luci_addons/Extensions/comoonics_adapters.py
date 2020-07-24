@@ -71,9 +71,9 @@ def comoonicsPortal(self, request=None, url=None, pagetype=None, type=None):
                           "type":        "cmdb" }
        },
        { "Title":       "Compare Sources 1:n",
-         "Description": "Com.oonics Compare installed Sources by selecting one master and multiple nodes.",
+         "Description": "Com.oonics Compare installed Sources by selecting one main and multiple nodes.",
          "params":      { "pagetype":    "rpmcompare",
-                          "searchfor" :  "master",
+                          "searchfor" :  "main",
                           "type":        "cmdb"}
        },
        { "Title":       "Compare Sources M:n",

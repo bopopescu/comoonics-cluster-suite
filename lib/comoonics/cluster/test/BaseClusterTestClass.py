@@ -78,8 +78,8 @@ class baseClusterTestClass(unittest.TestCase):
         self.nodeValues["1"]["eth1"]["ip"] = "dhcp"
         self.nodeValues["1"]["eth1"]["gateway"] = ""
         self.nodeValues["1"]["eth1"]["netmask"] = ""
-        self.nodeValues["1"]["eth1"]["master"] = ""
-        self.nodeValues["1"]["eth1"]["slave"] = ""
+        self.nodeValues["1"]["eth1"]["main"] = ""
+        self.nodeValues["1"]["eth1"]["subordinate"] = ""
         
         self.nodeValues["2"]={}
         self.nodeValues["2"]["name"] = "gfs-node2"
@@ -99,8 +99,8 @@ class baseClusterTestClass(unittest.TestCase):
         self.nodeValues["2"]["eth0"]["ip"] = "10.0.0.2"
         self.nodeValues["2"]["eth0"]["gateway"] = ""
         self.nodeValues["2"]["eth0"]["netmask"] = "255.255.255.0"
-        self.nodeValues["2"]["eth0"]["master"] = "bond0"
-        self.nodeValues["2"]["eth0"]["slave"] = "yes"
+        self.nodeValues["2"]["eth0"]["main"] = "bond0"
+        self.nodeValues["2"]["eth0"]["subordinate"] = "yes"
         
         self.nodeValues["2"]["eth1"]={}
         self.nodeValues["2"]["eth1"]["name"] = "eth1"
@@ -110,8 +110,8 @@ class baseClusterTestClass(unittest.TestCase):
         self.nodeValues["2"]["eth1"]["ip"] = "10.0.0.3"
         self.nodeValues["2"]["eth1"]["gateway"] = "1.2.3.4"
         self.nodeValues["2"]["eth1"]["netmask"] = "255.255.255.0"
-        self.nodeValues["2"]["eth1"]["master"] = ""
-        self.nodeValues["2"]["eth1"]["slave"] = ""
+        self.nodeValues["2"]["eth1"]["main"] = ""
+        self.nodeValues["2"]["eth1"]["subordinate"] = ""
         
         self.nodeValues["3"]={}
         self.nodeValues["3"]["name"] = "gfs-node3"
@@ -130,8 +130,8 @@ class baseClusterTestClass(unittest.TestCase):
         self.nodeValues["3"]["bond0"]["ip"] = "192.168.10.22"
         self.nodeValues["3"]["bond0"]["gateway"] = "192.168.10.1"
         self.nodeValues["3"]["bond0"]["netmask"] = "255.255.255.0"
-        self.nodeValues["3"]["bond0"]["master"] = ""
-        self.nodeValues["3"]["bond0"]["slave"] = ""
+        self.nodeValues["3"]["bond0"]["main"] = ""
+        self.nodeValues["3"]["bond0"]["subordinate"] = ""
         
         self.nodeValues["3"]["eth0"]={}
         self.nodeValues["3"]["eth0"]["name"] = "eth0"
@@ -141,8 +141,8 @@ class baseClusterTestClass(unittest.TestCase):
         self.nodeValues["3"]["eth0"]["ip"] = ""
         self.nodeValues["3"]["eth0"]["gateway"] = ""
         self.nodeValues["3"]["eth0"]["netmask"] = ""
-        self.nodeValues["3"]["eth0"]["master"] = "bond0"
-        self.nodeValues["3"]["eth0"]["slave"] = "yes"
+        self.nodeValues["3"]["eth0"]["main"] = "bond0"
+        self.nodeValues["3"]["eth0"]["subordinate"] = "yes"
         
         self.nodeValues["3"]["bond0.45"]={}
         self.nodeValues["3"]["bond0.45"]["name"] = "bond0.45"
@@ -152,5 +152,5 @@ class baseClusterTestClass(unittest.TestCase):
         self.nodeValues["3"]["bond0.45"]["ip"] = "192.168.254.233"
         self.nodeValues["3"]["bond0.45"]["gateway"] = ""
         self.nodeValues["3"]["bond0.45"]["netmask"] = "255.255.255.255"
-        self.nodeValues["3"]["bond0.45"]["master"] = ""
-        self.nodeValues["3"]["bond0.45"]["slave"] = ""
+        self.nodeValues["3"]["bond0.45"]["main"] = ""
+        self.nodeValues["3"]["bond0.45"]["subordinate"] = ""

@@ -61,7 +61,7 @@ class ReportPackages(PackagesIterator):
         self.linesize=0
         self.notinstalledstring="not installed"
         self.installedstring="installed"
-        self.master=None
+        self.main=None
         self.colformater="%s"
         if self.packages and not self.iter:
             self.iter=self.packages.sort
@@ -144,16 +144,16 @@ class CSVReportPackages(ReportPackages):
         self.colformater=colformater
 registerReport(CSVReportPackages)
 
-class MasterReportPackages(ReportPackages):
+class MainReportPackages(ReportPackages):
     PACKAGE_PROPERTIES_GENERAL=["name", "architecture"]
-    reportformat="masterdiffs"
+    reportformat="maindiffs"
     outputformat="text/plain"
-    def __init__(self, packages=None, master=None):
+    def __init__(self, packages=None, main=None):
         ReportPackages.__init__(self, packages)
-        self.masterstr="master: %s"
+        self.mainstr="main: %s"
         self.sourcestr="source: %s"
         self.sourcenamestr="name"
-        self.master=master
+        self.main=main
 
     def getnumcols(self):
         p1=len(Package.PACKAGE_PROPERTY_NAMES)
@@ -168,7 +168,7 @@ class MasterReportPackages(ReportPackages):
         header+=self.coldelimiter.join(map(lambda pname: self.colformater %pname.center(self.colwidths[1+self.PACKAGE_PROPERTIES_GENERAL.index(pname)]), 
                                            filter(lambda package: package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
         header+=self.coldelimiter
-        header+=self.coldelimiter.join(map(lambda pname: (self.colformater %(self.masterstr %pname)).center(self.colwidths[1+len(self.PACKAGE_PROPERTIES_GENERAL)+Package.PACKAGE_PROPERTY_NAMES.index(pname)]), 
+        header+=self.coldelimiter.join(map(lambda pname: (self.colformater %(self.mainstr %pname)).center(self.colwidths[1+len(self.PACKAGE_PROPERTIES_GENERAL)+Package.PACKAGE_PROPERTY_NAMES.index(pname)]), 
                                            filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
         header+=self.coldelimiter
         header+=self.coldelimiter.join(map(lambda pname: (self.colformater %(self.sourcestr %pname)).center(self.colwidths[1+len(Package.PACKAGE_PROPERTY_NAMES)+Package.PACKAGE_PROPERTY_NAMES.index(pname)]), 
@@ -179,31 +179,31 @@ class MasterReportPackages(ReportPackages):
         self.line()
         
     def format(self, package):
-        masterinstalled=False
-        # set masterpackage if this one is installed on the master
-        masteridx=self.packages.sources.index(self.master)
-        if package.sources & 1<<masteridx > 0:
-            masterinstalled=True
+        maininstalled=False
+        # set mainpackage if this one is installed on the main
+        mainidx=self.packages.sources.index(self.main)
+        if package.sources & 1<<mainidx > 0:
+            maininstalled=True
         for sourceidx in range(len(self.packages.sources)):
-            # if this is the sourceindex for the master skip
-            if sourceidx == masteridx:
+            # if this is the sourceindex for the main skip
+            if sourceidx == mainidx:
                 continue
-            # this package is not installed on this node and not on the master (skip it)
-            elif 1<<sourceidx & package.sources == 0 and not masterinstalled:
+            # this package is not installed on this node and not on the main (skip it)
+            elif 1<<sourceidx & package.sources == 0 and not maininstalled:
                 continue
-            # if this package is not installed on this node but on the master list it
-            elif 1<<sourceidx & package.sources == 0 and masterinstalled:
-                self.writePackage(package, sourceidx, masterinstalled)
-            # if this package is installed but not on the master list also
-            elif 1<<sourceidx & package.sources > 0 and not masterinstalled:
-                self.writePackage(package, sourceidx, masterinstalled)
+            # if this package is not installed on this node but on the main list it
+            elif 1<<sourceidx & package.sources == 0 and maininstalled:
+                self.writePackage(package, sourceidx, maininstalled)
+            # if this package is installed but not on the main list also
+            elif 1<<sourceidx & package.sources > 0 and not maininstalled:
+                self.writePackage(package, sourceidx, maininstalled)
 
-    def writePackage(self, package, sourceidx, masterinstalled):
+    def writePackage(self, package, sourceidx, maininstalled):
         self.outputchannel.write((self.colformater %self.packages.sources[sourceidx]).ljust(self.colwidths[0])+self.coldelimiter)
         self.outputchannel.write(self.coldelimiter.join(map(lambda pname: (self.colformater %getattr(package, pname)).ljust(self.colwidths[1+self.PACKAGE_PROPERTIES_GENERAL.index(pname)]), 
                                                             filter(lambda package: package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES))))
         self.outputchannel.write(self.coldelimiter)
-        if masterinstalled:
+        if maininstalled:
             self.outputchannel.write(self.coldelimiter.join(map(lambda pname: (self.colformater %getattr(package, pname)).ljust(self.colwidths[1+len(Package.PACKAGE_PROPERTY_NAMES)+Package.PACKAGE_PROPERTY_NAMES.index(pname)]), 
                                                                 filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES))))
             self.outputchannel.write(self.coldelimiter)
@@ -217,18 +217,18 @@ class MasterReportPackages(ReportPackages):
             self.outputchannel.write(self.coldelimiter.join(map(lambda pname: (self.colformater %getattr(package, pname, self.notinstalledstring)).ljust(self.colwidths[1+len(Package.PACKAGE_PROPERTY_NAMES)+Package.PACKAGE_PROPERTY_NAMES.index(pname)]), 
                                                                 filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES))))
         self.outputchannel.write(self.linesep)
-registerReport(MasterReportPackages)
+registerReport(MainReportPackages)
 
-class CSVMasterReportPackages(MasterReportPackages):
-    reportformat="masterdiffs"
+class CSVMainReportPackages(MainReportPackages):
+    reportformat="maindiffs"
     outputformat="text/csv"
-    def __init__(self, packages=None, master=None, coldelimiter=",", colformater="\"%s\""):
-        MasterReportPackages.__init__(self, packages, master)
+    def __init__(self, packages=None, main=None, coldelimiter=",", colformater="\"%s\""):
+        MainReportPackages.__init__(self, packages, main)
         self.coldelimiter=coldelimiter
         self.linechar=None
         self.colwidth=0
         self.colformater=colformater
-registerReport(CSVMasterReportPackages)
+registerReport(CSVMainReportPackages)
         
 ###############
 # $Log:$

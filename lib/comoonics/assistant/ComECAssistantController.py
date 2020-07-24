@@ -117,7 +117,7 @@ class ECAssistantController(AssistantController):
             return _path
 
     def _check_for_known_xsl_files(self):
-        _xpaths={"/localclone": "localclone.xsl", "/masterclone":"masterclone.xsl"}
+        _xpaths={"/localclone": "localclone.xsl", "/mainclone":"mainclone.xsl"}
         for _xpath in _xpaths.iterkeys():
             _node=xpath.Evaluate(_xpath, self.doc)
             if len(_node) != 0: return _xpaths.get(_xpath)

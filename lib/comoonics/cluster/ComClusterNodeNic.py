@@ -117,14 +117,14 @@ class ComoonicsClusterNodeNic(comoonics.cluster.ClusterObject):
         from ComClusterRepository import ComoonicsClusterRepository
         return self.getAttribute(ComoonicsClusterRepository.attribute_netdev_netmask, "")
     
-    def getMaster(self):
-        """Returns master"""
+    def getMain(self):
+        """Returns main"""
         #optional attribute, return empty string if not set
         from ComClusterRepository import ComoonicsClusterRepository
-        return self.getAttribute(ComoonicsClusterRepository.attribute_netdev_master, "")
+        return self.getAttribute(ComoonicsClusterRepository.attribute_netdev_main, "")
     
-    def getSlave(self):
-        """Returns slave"""
+    def getSubordinate(self):
+        """Returns subordinate"""
         #optional attribute, return empty string if not set
         from ComClusterRepository import ComoonicsClusterRepository
-        return self.getAttribute(ComoonicsClusterRepository.attribute_netdev_slave, "")
+        return self.getAttribute(ComoonicsClusterRepository.attribute_netdev_subordinate, "")

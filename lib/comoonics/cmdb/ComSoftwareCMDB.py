@@ -28,7 +28,7 @@ class SoftwareCMDB(BaseDB):
                         "version",
                         "subversion",
                         "architecture")
-    SELECT_FOR_DIFFS_MASTER=("sourcename", "name", "version_master", "subversion_master", "architecture_master", "version_diffs", "subversion_diffs", "architecture_diffs")
+    SELECT_FOR_DIFFS_MASTER=("sourcename", "name", "version_main", "subversion_main", "architecture_main", "version_diffs", "subversion_diffs", "architecture_diffs")
 
     DIFFS_COLNAME="diffs"
     CREATE_TABLE="""CREATE TABLE IF NOT EXISTS `%s` (
@@ -66,7 +66,7 @@ class SoftwareCMDB(BaseDB):
             row=rs.fetch_row()
         return clusters
    
-    def getPackages(self, sourcenames, master, colnames=None, limitup=0, limitdown=0, where=None): 
+    def getPackages(self, sourcenames, main, colnames=None, limitup=0, limitdown=0, where=None): 
         """
         Returns a set of differences of the given sourcenamess.
         Parameter are the sourcenames to compare
@@ -74,9 +74,9 @@ class SoftwareCMDB(BaseDB):
         if not colnames:
             colnames=list(SoftwareCMDB.COMPARE_2_SOFTWARE)
             colnames.append("clustername")
-        if master:
-            # Add master to the beginning
-            sourcenames.insert(0, master)
+        if main:
+            # Add main to the beginning
+            sourcenames.insert(0, main)
         softwarecmdb=self._createSoftwareCMDB(sourcenames, colnames, limitup, limitdown, where)
         return softwarecmdb
 

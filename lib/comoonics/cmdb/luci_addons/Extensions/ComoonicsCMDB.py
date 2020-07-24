@@ -87,39 +87,39 @@ def getCategoriesForCMDB():
     del source
     return categories
 
-def createConverter(source=None, master=None, category=None, where=None, convertertype="coladddiffs/dict"):
+def createConverter(source=None, main=None, category=None, where=None, convertertype="coladddiffs/dict"):
     cmdb=SoftwareCMDB(hostname=ComoonicsGlobals.mysqlserver, user=ComoonicsGlobals.mysqluser, password=ComoonicsGlobals.mysqlpassword, database=ComoonicsGlobals.mysqldatabase)
-    ComoonicsGlobals.mylog.debug("searching for master %s with source %s" %(master, source))
+    ComoonicsGlobals.mylog.debug("searching for main %s with source %s" %(main, source))
     if category:
         dbsource=Source(dbhandle=cmdb.db)
         source=dbsource.getSourcesForCategory(category)
         ComoonicsGlobals.mylog.debug("got %u sources for category %s" %(len(source), category))
     if isinstance(source, basestring):
         source=[source]
-    packages=cmdb.getPackages(source, master, None, 0, 0, where)
+    packages=cmdb.getPackages(source, main, None, 0, 0, where)
     differences=packages.differences()
     ComoonicsGlobals.mylog.debug("Searching for converter: %s" %convertertype)
     converter=getConverter(convertertype)(differences)
     ComoonicsGlobals.mylog.debug("Got converter: %s" %converter)
     return converter
         
-def createReport(source=None, master=None, category=None, where=None, reporttype="diffs/text/csv"):
+def createReport(source=None, main=None, category=None, where=None, reporttype="diffs/text/csv"):
     cmdb=SoftwareCMDB(hostname=ComoonicsGlobals.mysqlserver, user=ComoonicsGlobals.mysqluser, password=ComoonicsGlobals.mysqlpassword, database=ComoonicsGlobals.mysqldatabase)
-    ComoonicsGlobals.mylog.debug("searching for master %s with source %s" %(master, source))
+    ComoonicsGlobals.mylog.debug("searching for main %s with source %s" %(main, source))
     if category:
         dbsource=Source(dbhandle=cmdb.db)
         source=dbsource.getSourcesForCategory(category)
         ComoonicsGlobals.mylog.debug("got %u sources for category %s" %(len(source), category))
     if isinstance(source, basestring):
         source=[source]
-    packages=cmdb.getPackages(source, master, None, 0, 0, where)
+    packages=cmdb.getPackages(source, main, None, 0, 0, where)
     differences=packages.differences()
     ComoonicsGlobals.mylog.debug("Searching for converter: %s" %reporttype)
     report=getReport(reporttype)(differences)
     ComoonicsGlobals.mylog.debug("Got converter: %s" %report)
     return report
         
-def getSoftwareForCMDBSearch(source, packagesearch, limitfrom=0, limitlength=20, searchfor="source", master=None, details=None, convertertype="coladddiffs/dict"):
+def getSoftwareForCMDBSearch(source, packagesearch, limitfrom=0, limitlength=20, searchfor="source", main=None, details=None, convertertype="coladddiffs/dict"):
     details_bool=getDetailBools(details, searchfor)
     ComoonicsGlobals.mylog.debug("details_bool: %s" %(details_bool))
 
@@ -133,8 +133,8 @@ def getSoftwareForCMDBSearch(source, packagesearch, limitfrom=0, limitlength=20,
     ComoonicsGlobals.mylog.debug("searchstring: %s" %packagesearch)
     if searchfor=="category":
         converter=createConverter(category=source, where=where, convertertype=convertertype)
-    elif searchfor=="master" and master:
-        converter=createConverter(source=source, master=master, where=where, convertertype=convertertype)
+    elif searchfor=="main" and main:
+        converter=createConverter(source=source, main=main, where=where, convertertype=convertertype)
     elif searchfor=="source" and source and type(source)==list:
         converter=createConverter(source=source, where=where, convertertype=convertertype)
     elif searchfor=="source" and source and isinstance(source, basestring):
@@ -166,7 +166,7 @@ def getSoftwareForCMDBSearch(source, packagesearch, limitfrom=0, limitlength=20,
 #    del cmdb
     if converter:
         converter.convert(frompackage=limitfrom, topackage=limitfrom+limitlength, 
-                          master=master, idcolname="id", idcolvalues=ComoonicsGlobals.notinstalled_ids,
+                          main=main, idcolname="id", idcolvalues=ComoonicsGlobals.notinstalled_ids,
                           iter=converter.packages.sort)
         ComoonicsGlobals.mylog.debug("Returning converter value %u, from %u..%u." %(len(converter.getvalue()), limitfrom, limitfrom+limitlength))
         return converter.getallvalues()
@@ -174,9 +174,9 @@ def getSoftwareForCMDBSearch(source, packagesearch, limitfrom=0, limitlength=20,
         ComoonicsGlobals.mylog.debug("Returning no converter.")
         return None
 
-def exportSoftwareForCMDBSearchName(sourcename, searchstring, select="name", limitf=0, limitl=0, searchfor="source", mastername=None, details=None, sep=",", report="diffs/text/csv"):
-    return exportSoftwareForCMDBSearch(sourcename, searchstring, select, limitf, limitl, searchfor, mastername, details, sep)
-def exportSoftwareForCMDBSearch(sourcename, searchstring, select=None, limitf=0, limitl=0, searchfor="source", mastername=None, details=None, sep=",", report="diffs/text/csv"):
+def exportSoftwareForCMDBSearchName(sourcename, searchstring, select="name", limitf=0, limitl=0, searchfor="source", mainname=None, details=None, sep=",", report="diffs/text/csv"):
+    return exportSoftwareForCMDBSearch(sourcename, searchstring, select, limitf, limitl, searchfor, mainname, details, sep)
+def exportSoftwareForCMDBSearch(sourcename, searchstring, select=None, limitf=0, limitl=0, searchfor="source", mainname=None, details=None, sep=",", report="diffs/text/csv"):
     if type(limitf)==str:
         limitf=int(limitf)
     if type(limitl)==str:
@@ -189,8 +189,8 @@ def exportSoftwareForCMDBSearch(sourcename, searchstring, select=None, limitf=0,
     ComoonicsGlobals.mylog.debug("searchstring: %s" %searchstring)
     if searchfor=="category":
         _report=createReport(category=sourcename, where=where, reporttype=report)
-    elif searchfor=="master" and mastername:
-        _report=createReport(source=sourcename, master=mastername, where=where, reporttype=report)
+    elif searchfor=="main" and mainname:
+        _report=createReport(source=sourcename, main=mainname, where=where, reporttype=report)
     elif searchfor=="source" and sourcename and type(sourcename)==list:
         _report=createReport(source=sourcename, where=where, reporttype=report)
     elif searchfor=="source" and sourcename and isinstance(sourcename, basestring):
@@ -199,12 +199,12 @@ def exportSoftwareForCMDBSearch(sourcename, searchstring, select=None, limitf=0,
         pass
     buffer=cStringIO.StringIO()
     if _report:
-        _report.report(outputchannel=buffer, master=mastername, idcolname="id", idcolvalues=ComoonicsGlobals.notinstalled_ids,
+        _report.report(outputchannel=buffer, main=mainname, idcolname="id", idcolvalues=ComoonicsGlobals.notinstalled_ids,
                         iter=_report.packages.sort)
     else:
         ComoonicsGlobals.mylog.debug("Returning no report.")
     return buffer.getvalue()
-#    rs=getSoftwareForCMDBSearch(sourcename, searchstring, limitf, limitl, searchfor, mastername, details)
+#    rs=getSoftwareForCMDBSearch(sourcename, searchstring, limitf, limitl, searchfor, mainname, details)
 #    firstLine=False
 #    buf=""
 #    ComoonicsGlobals.mylog.debug("Resolved %s lines; searchfor: %s"%(len(rs), searchfor))

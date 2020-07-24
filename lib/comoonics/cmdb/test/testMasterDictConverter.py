@@ -5,7 +5,7 @@ Created on 31.03.2011
 '''
 import unittest
 from comoonics.cmdb.ComSoftwareCMDB import SoftwareCMDB
-from comoonics.cmdb.Converter import DictMasterConverter
+from comoonics.cmdb.Converter import DictMainConverter
 
 class Test(unittest.TestCase):
     def setUp(self):
@@ -17,23 +17,23 @@ class Test(unittest.TestCase):
         pass
     
     def testconvertcolnames(self):
-        self.converter=DictMasterConverter(self.differences, "lilr601")
+        self.converter=DictMainConverter(self.differences, "lilr601")
         self.converter.convert()
-        rescolnames=['source: name', 'name', 'architecture', 'master: version', 'master: subversion', 'source: version', 'source: subversion']
+        rescolnames=['source: name', 'name', 'architecture', 'main: version', 'main: subversion', 'source: version', 'source: subversion']
         colnames=self.converter.columnnames
         self.assertEquals(colnames, rescolnames)
     
     def testconvert(self):
-        self.converter=DictMasterConverter(self.differences, "lilr601")
+        self.converter=DictMainConverter(self.differences, "lilr601")
         self.converter.convert()
         rows=self.converter.getvalue()
         print ",\n".join(map(str, rows))
         result=[
-{'master: subversion': '72.2.0.2', 'name': 'GFS-kernel-debuginfo', 'source: subversion': 'not installed', 'source: name': 'lilr642', 'architecture': 'x86_64', 'source: version': 'not installed', 'master: version': '2.6.9'},
-{'master: subversion': '72.2.0.2', 'name': 'GFS-kernel-debuginfo', 'source: subversion': 'not installed', 'source: name': 'lilr602', 'architecture': 'x86_64', 'source: version': 'not installed', 'master: version': '2.6.9'},
-{'master: subversion': 'not installed', 'name': 'GFS-kernel-debuginfo', 'architecture': 'x86_64', 'source: name': 'lilr602', 'source: subversion': '80.9.el4_7.5.hotfix.1', 'source: version': '2.6.9', 'master: version': 'not installed'},
-{'master: subversion': 'not installed', 'name': 'GFS-kernel-largesmp', 'architecture': 'x86_64', 'source: name': 'lilr642', 'source: subversion': '80.9.el4_7.1', 'source: version': '2.6.9', 'master: version': 'not installed'},
-{'master: subversion': '80.9.el4_7.5.hotfix.1', 'name': 'GFS-kernel-largesmp', 'source: subversion': 'not installed', 'source: name': 'lilr642', 'architecture': 'x86_64', 'source: version': 'not installed', 'master: version': '2.6.9'}
+{'main: subversion': '72.2.0.2', 'name': 'GFS-kernel-debuginfo', 'source: subversion': 'not installed', 'source: name': 'lilr642', 'architecture': 'x86_64', 'source: version': 'not installed', 'main: version': '2.6.9'},
+{'main: subversion': '72.2.0.2', 'name': 'GFS-kernel-debuginfo', 'source: subversion': 'not installed', 'source: name': 'lilr602', 'architecture': 'x86_64', 'source: version': 'not installed', 'main: version': '2.6.9'},
+{'main: subversion': 'not installed', 'name': 'GFS-kernel-debuginfo', 'architecture': 'x86_64', 'source: name': 'lilr602', 'source: subversion': '80.9.el4_7.5.hotfix.1', 'source: version': '2.6.9', 'main: version': 'not installed'},
+{'main: subversion': 'not installed', 'name': 'GFS-kernel-largesmp', 'architecture': 'x86_64', 'source: name': 'lilr642', 'source: subversion': '80.9.el4_7.1', 'source: version': '2.6.9', 'main: version': 'not installed'},
+{'main: subversion': '80.9.el4_7.5.hotfix.1', 'name': 'GFS-kernel-largesmp', 'source: subversion': 'not installed', 'source: name': 'lilr642', 'architecture': 'x86_64', 'source: version': 'not installed', 'main: version': '2.6.9'}
 ]
         self.assertEquals(rows, result)
 

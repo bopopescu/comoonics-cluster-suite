@@ -36,11 +36,11 @@ class test_ClusterNodeNic(baseClusterTestClass):
     def testGetnetmask(self):
         self._testNicGetName("netmask")
             
-    def testGetmaster(self):
-        self._testNicGetName("master")
+    def testGetmain(self):
+        self._testNicGetName("main")
                     
-    def testGetslave(self):
-        self._testNicGetName("slave")
+    def testGetsubordinate(self):
+        self._testNicGetName("subordinate")
 
 def test_main():
     try:

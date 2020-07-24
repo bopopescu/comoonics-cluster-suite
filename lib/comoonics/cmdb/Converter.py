@@ -114,49 +114,49 @@ class TableConverter(PackagesConverter):
         return self.rows
 registerConverter(TableConverter)
 
-class TableMasterConverter(TableConverter):
-    converterformat="masterdiffs"
+class TableMainConverter(TableConverter):
+    converterformat="maindiffs"
     outputformat=list
     PACKAGE_PROPERTIES_GENERAL=["name", "architecture"]
-    def __init__(self, packages=None, master=None):
+    def __init__(self, packages=None, main=None):
         TableConverter.__init__(self, packages)
-        self.master=master
-        self.masterstr="master: %s" 
+        self.main=main
+        self.mainstr="main: %s" 
         self.sourcestr="source: %s"
         self.sourcenamestr="name"
          
     def addcolumnnames(self, package):
         self.columnnames.append(getattr(self, "sourcestr") %getattr(self, "sourcenamestr"))
         self.columnnames.extend(filter(lambda package: package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES))
-        self.columnnames.extend(map(lambda pname: getattr(self, "masterstr") %pname, filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
+        self.columnnames.extend(map(lambda pname: getattr(self, "mainstr") %pname, filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
         self.columnnames.extend(map(lambda pname: getattr(self, "sourcestr") %pname, filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
         
     def add(self, package):
-        masterinstalled=False
-        # set masterpackage if this one is installed on the master
-        masteridx=getattr(self, "packages").sources.index(getattr(self, "master"))
-        if package.sources & 1<<masteridx > 0:
-            masterinstalled=True
+        maininstalled=False
+        # set mainpackage if this one is installed on the main
+        mainidx=getattr(self, "packages").sources.index(getattr(self, "main"))
+        if package.sources & 1<<mainidx > 0:
+            maininstalled=True
         for sourceidx in range(len(self.packages.sources)):
-            # if this is the sourceindex for the master skip
-            if sourceidx == masteridx:
+            # if this is the sourceindex for the main skip
+            if sourceidx == mainidx:
                 continue
-            # this package is not installed on this node and not on the master (skip it)
-            elif 1<<sourceidx & package.sources == 0 and not masterinstalled:
+            # this package is not installed on this node and not on the main (skip it)
+            elif 1<<sourceidx & package.sources == 0 and not maininstalled:
                 continue
-            # if this package is not installed on this node but on the master list it
-            elif 1<<sourceidx & package.sources == 0 and masterinstalled:
-                self._addpackage(package, sourceidx, masterinstalled)
-            # if this package is installed but not on the master list also
-            elif 1<<sourceidx & package.sources > 0 and not masterinstalled:
-                self._addpackage(package, sourceidx, masterinstalled)
+            # if this package is not installed on this node but on the main list it
+            elif 1<<sourceidx & package.sources == 0 and maininstalled:
+                self._addpackage(package, sourceidx, maininstalled)
+            # if this package is installed but not on the main list also
+            elif 1<<sourceidx & package.sources > 0 and not maininstalled:
+                self._addpackage(package, sourceidx, maininstalled)
 
-    def _addpackage(self, package, sourceidx, masterinstalled):
+    def _addpackage(self, package, sourceidx, maininstalled):
         row=list()
         row.append(self.packages.sources[sourceidx])
         row.extend(map(lambda pname: getattr(package, pname), 
                        filter(lambda package: package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
-        if masterinstalled:
+        if maininstalled:
             row.extend(map(lambda pname: getattr(package, pname), 
                            filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
             row.extend(map(lambda pname: getattr(self, "notinstalledstring"), 
@@ -168,7 +168,7 @@ class TableMasterConverter(TableConverter):
                            filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
         self.rows.append(row)
         return row
-registerConverter(TableMasterConverter)
+registerConverter(TableMainConverter)
     
 class DictConverter(PackagesConverter):
     converterformat="diffs"
@@ -199,58 +199,58 @@ class DictConverter(PackagesConverter):
         return getattr(self, "rows")
 registerConverter(DictConverter)
 
-class DictMasterConverter(DictConverter):
-    converterformat="masterdiffs"
+class DictMainConverter(DictConverter):
+    converterformat="maindiffs"
     outputformat=dict
     PACKAGE_PROPERTIES_GENERAL=["name", "architecture"]
-    def __init__(self, packages, master=None):
+    def __init__(self, packages, main=None):
         DictConverter.__init__(self, packages)
-        self.master=master
-        self.masterstr="master: %s"
+        self.main=main
+        self.mainstr="main: %s"
         self.sourcestr="source: %s"
         self.sourcenamestr="name"
         
     def addcolumnnames(self, package):
         self.columnnames.append(getattr(self, "sourcestr") %getattr(self, "sourcenamestr"))
         self.columnnames.extend(filter(lambda package: package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES))
-        self.columnnames.extend(map(lambda pname: getattr(self, "masterstr") %pname, filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
+        self.columnnames.extend(map(lambda pname: getattr(self, "mainstr") %pname, filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
         self.columnnames.extend(map(lambda pname: getattr(self, "sourcestr") %pname, filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES)))
         
     def add(self, package):
-        masterinstalled=False
-        # set masterpackage if this one is installed on the master
-        masteridx=getattr(self, "packages").sources.index(getattr(self, "master"))
-        if package.sources & 1<<masteridx > 0:
-            masterinstalled=True
+        maininstalled=False
+        # set mainpackage if this one is installed on the main
+        mainidx=getattr(self, "packages").sources.index(getattr(self, "main"))
+        if package.sources & 1<<mainidx > 0:
+            maininstalled=True
         for sourceidx in range(len(self.packages.sources)):
-            # if this is the sourceindex for the master skip
-            if sourceidx == masteridx:
+            # if this is the sourceindex for the main skip
+            if sourceidx == mainidx:
                 continue
-            # this package is not installed on this node and not on the master (skip it)
-            elif 1<<sourceidx & package.sources == 0 and not masterinstalled:
+            # this package is not installed on this node and not on the main (skip it)
+            elif 1<<sourceidx & package.sources == 0 and not maininstalled:
                 continue
-            # if this package is not installed on this node but on the master list it
-            elif 1<<sourceidx & package.sources == 0 and masterinstalled:
-                self._addpackage(package, sourceidx, masterinstalled)
-            # if this package is installed but not on the master list also
-            elif 1<<sourceidx & package.sources > 0 and not masterinstalled:
-                self._addpackage(package, sourceidx, masterinstalled)
+            # if this package is not installed on this node but on the main list it
+            elif 1<<sourceidx & package.sources == 0 and maininstalled:
+                self._addpackage(package, sourceidx, maininstalled)
+            # if this package is installed but not on the main list also
+            elif 1<<sourceidx & package.sources > 0 and not maininstalled:
+                self._addpackage(package, sourceidx, maininstalled)
 
-    def _addpackage(self, package, sourceidx, masterinstalled):
+    def _addpackage(self, package, sourceidx, maininstalled):
         row=dict()
         row[self.columnnames[0]]=self.packages.sources[sourceidx]
         for pname in filter(lambda package: package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES):
             row[pname]=getattr(package, pname)
         for pname in filter(lambda package: not package in self.PACKAGE_PROPERTIES_GENERAL, Package.PACKAGE_PROPERTY_NAMES):
-            if masterinstalled:
-                row[getattr(self, "masterstr") %pname]=getattr(package, pname)
+            if maininstalled:
+                row[getattr(self, "mainstr") %pname]=getattr(package, pname)
                 row[getattr(self, "sourcestr") %pname]=getattr(self, "notinstalledstring")
             else:
                 row[getattr(self, "sourcestr") %pname]=getattr(package, pname)
-                row[getattr(self, "masterstr") %pname]=getattr(self, "notinstalledstring")
+                row[getattr(self, "mainstr") %pname]=getattr(self, "notinstalledstring")
         getattr(self, "rows").append(row)
         return row
-registerConverter(DictMasterConverter)
+registerConverter(DictMainConverter)
 
 class DictConverterColAdd(DictConverter):
     converterformat="coladddiffs"
@@ -271,24 +271,24 @@ class DictConverterColAdd(DictConverter):
         setattr(self, "numpackages", getattr(self,"numpackages")+1)
 registerConverter(DictConverterColAdd)
 
-class DictMasterConverterColAdd(DictMasterConverter):
-    converterformat="coladdmasterdiffs"
+class DictMainConverterColAdd(DictMainConverter):
+    converterformat="coladdmaindiffs"
     outputformat=dict
-    def __init__(self, packages=None, master=None, colname="id", idcolvalues=["id1", "id2"]):
-        DictMasterConverter.__init__(self, packages, master)
+    def __init__(self, packages=None, main=None, colname="id", idcolvalues=["id1", "id2"]):
+        DictMainConverter.__init__(self, packages, main)
         self.idcolname=colname
         self.idcolvalues=idcolvalues
         self.numpackages=0
 
     def addcolumnnames(self, package):
-        DictMasterConverter.addcolumnnames(self, package)
+        DictMainConverter.addcolumnnames(self, package)
         getattr(self, "columnnames").append(getattr(self, "idcolname"))
 
-    def _addpackage(self, package, sourceidx, masterinstalled):
-        row=DictMasterConverter._addpackage(self, package, sourceidx, masterinstalled)
+    def _addpackage(self, package, sourceidx, maininstalled):
+        row=DictMainConverter._addpackage(self, package, sourceidx, maininstalled)
         row[getattr(self, "idcolname")]=getattr(self, "idcolvalues")[getattr(self, "numpackages")%len(getattr(self, "idcolvalues"))]
         setattr(self, "numpackages", getattr(self,"numpackages")+1)
-registerConverter(DictMasterConverterColAdd)
+registerConverter(DictMainConverterColAdd)
     
 ###############
 # $Log:$
